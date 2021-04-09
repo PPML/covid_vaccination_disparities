@@ -1,6 +1,6 @@
 # Addressing racial/ethnic disparities in the COVID-19 vaccination campaign
 
-## Note: this work is preliminary and has not yet been peer-reviewed or published.
+### Note: this work is preliminary and has not yet been peer-reviewed or published.
 
 This repository contains replication [data](https://github.com/PPML/covid_vaccination_disparities/tree/main/data) and [code](https://github.com/PPML/covid_vaccination_disparities/tree/main/code) for our [pre-print manuscript](https://github.com/PPML/covid_vaccination_disparities/blob/main/Vax-Disparities-Paper.pdf).
 

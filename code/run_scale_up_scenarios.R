@@ -2,6 +2,8 @@ rm(list = ls())
 
 library(data.table)
 library(ggplot2)
+library(DBI)
+library(RSQLite)
 
 regions <- fread("https://raw.githubusercontent.com/cphalpert/census-regions/master/us%20census%20bureau%20regions%20and%20divisions.csv")
 regions <- regions[, geo_id:=tolower(`State Code`)]
@@ -27,14 +29,12 @@ df <- df[race_grp_full == "Native Hawaiian or Pacific Islander", race_grp_full:=
 df <- df[race_grp_full=="Latino", race_grp_full:="Hispanic"]
 
 
-df <- df[, state_pop:=sum(estimate, na.rm=T), by = c("state_name", "race_grp_full", "Age Start", "Age End")]
+df <- df[, state_pop:=sum(estimate, na.rm=T), by = c("state_name", "race_grp_full")]
 setnames(df, "race_grp_full", "race_grp")
 
-whole_pop <- unique(df[,.(state_pop, race_grp, state_name)])
-
 ## For this, using ages 15+ (no individual-level data available at tract level)
-## This only informs the population age-race structure, so only small error introduced; coverage levels defined among pop ages 16+ from CDC at state-level.
 df <- df[`Age Start`>=15]
+df <- df[`Age Start`==15, estimate:=estimate*.9] # Reduce population because 15 year olds are not yet eligible
 
 ## Merge in SVI
 files <- list.files("data/svi_data/")
@@ -54,7 +54,7 @@ df <- df[, mean_svi_state:=mean(mean_svi_state, na.rm=T), by = "state"]
 df <- df[RPL_THEMES<0 | RPL_THEMES>1, RPL_THEMES:=mean_svi_state] # Replace missing SVI with state mean SVI
 
 df <- df[, estimate:=sum(estimate, na.rm=T), by = c("GEOID", "state_name", "race_grp")]
-df <- unique(df[,.(GEOID, race_grp, county, state_name, estimate, state, county_code, RPL_THEMES, ST_ABBR)])
+df <- unique(df[,.(GEOID, race_grp, county, state_name, state_code, estimate, state, county_code, RPL_THEMES, ST_ABBR, state_pop)])
 df <- merge(df, regions[,.(`State Code`, Region, Division)], by.y = "State Code", by.x="state")
 
 # Access
@@ -69,10 +69,14 @@ df <- df[, weight_actual:=NULL]
 setnames(df, "effective_demand", "weight_actual")
 
 # Vax Stats
-vax_stats <- fread("data/apr1_vax_state_data.csv")
-vax_stats <- vax_stats[,.(state_name, `People with at least One Dose by State of Residence`)]
+con <- dbConnect(SQLite(), "~/COVID/vaccination_analysis/cdc-vaccination-history/cdc.db")
+vax_stats <- as.data.table(dbReadTable(con, 'daily_reports'))
+vax_stats <- vax_stats[, Date:=as.Date(Date)]
+setnames(vax_stats, "LongName", "state_name")
+vax_stats <- vax_stats[Date=="2021-04-01"]
+vax_stats <- vax_stats[,.(state_name, `Administered_Dose1_Recip`)]
 vax_stats <- vax_stats[, lapply(.SD, as.numeric), by = "state_name"]
-vax_stats <- vax_stats[, doses:=`People with at least One Dose by State of Residence`]
+vax_stats <- vax_stats[, doses:=`Administered_Dose1_Recip`]
 vax_stats <- vax_stats[,.(doses, state_name)]
 vax_stats <- vax_stats[state_name=="New York State", state_name:="New York"]
 
@@ -105,12 +109,21 @@ df <- merge(df, vax_stats, by = c("state_name", "race_grp"))
 df <- df[, vaccinated:=estimate*vaccinated_pct/100]
 
 ## State allocation based on size of 16+ population
-alloc <- fread("prepped/pops_16.csv")
-alloc <- alloc[, state_pop:=sum(state_pop, na.rm=T), by = "state_name"]
-alloc <- unique(alloc[,.(state_pop, state_name)])
-alloc <- alloc[, state_pct:=state_pop/sum(state_pop)]
-
-df <- merge(df, alloc, by = "state_name")
+# alloc <- fread("prepped/pops_16.csv")
+# alloc <- alloc[, state_pop:=sum(state_pop, na.rm=T), by = "state_name"]
+# alloc <- unique(alloc[,.(state_pop, state_name)])
+# alloc <- alloc[, state_pct:=state_pop/sum(state_pop)]
+# 
+# df <- merge(df, alloc, by = "state_name")
+vax_history <- as.data.table(dbReadTable(con, 'daily_reports'))
+vax_history <- vax_history[LongName=="New York State", LongName:="New York"]
+vax_history <- vax_history[, Date:=as.Date(Date)]
+vax_history <- vax_history[,.(Date, LongName, Administered_Dose1_Recip)]
+setnames(vax_history, "LongName", "state_name")
+vax_history <- vax_history[, l1:=lag(Administered_Dose1_Recip, n = 1), by = c("state_name")]
+vax_history <- vax_history[, incident:=Administered_Dose1_Recip-l1]
+vax_history <- vax_history[, smooth:=frollmean(incident, 7, align = "right"), by = c("state_name")]
+vax_history <- vax_history[Date=="2021-04-01"]
 
 real_backup <- copy(df)
 
@@ -129,7 +142,7 @@ sim_data <- copy(df)
 ## Equalized Uptake
 ## Equalized Uptake and Geographic Targeting
 
-scenario_label <- "Status Quo"
+scenario_label <- "Equalized Uptake and Geographic Targeting"
 
 if (scenario_label == "Status Quo") {
   print(paste0("Running ", scenario_label))
@@ -146,12 +159,13 @@ if (scenario_label == "Equalized Uptake and Geographic Targeting") {
   sim_data <- sim_data[, wtd_pop:=ifelse(RPL_THEMES>=.75, estimate*1.6, estimate*.8)]
 }
 
-## Compute tract allcoation
+## Compute tract allocation
 sim_data <- sim_data[, geo_pop:=sum(wtd_pop, na.rm=T), by = c(geo, "state_name")]
-sim_data <- sim_data[, geo_alloc:=geo_pop/state_pop]
+sim_data <- sim_data[, pop_elig:=sum(estimate, na.rm=T), by = "state_name"]
+sim_data <- sim_data[, geo_alloc:=geo_pop/pop_elig]
 sim_data <- sim_data[, weighted_demand:=(estimate-vaccinated)*weight_actual]
 sim_data <- sim_data[, race_age_pct:=weighted_demand/sum(weighted_demand, na.rm=T), by = c(geo, "state_name")]
-sim_data <- sim_data[, state_race_tot:=sum(estimate, na.rm=T), by = c("state_name", "race_grp")]
+sim_data <- sim_data[, state_race_elig:=sum(estimate, na.rm=T), by = c("state_name", "race_grp")]
 
 ## Fix Current Values ##
 sim_data <- sim_data[, weight_actual_current:=weight_actual]
@@ -164,16 +178,16 @@ time_to_cap <- 7*6
 out <- NULL
 for (s in unique(sim_data$state_name)) {
   print(s)
-  supply <- 1.68*1000000
+  supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date=="2021-04-01"]
   sim_data <- backup[state_name==s]
   counter <- 1
-  for (i in as.list(seq.Date(as.Date("04/01/2021", format="%m/%d/%Y"),as.Date("7/01/2021", format="%m/%d/%Y"), "days"))) {
-    sim_data <- sim_data[, daily_vax:=supply*state_pct*geo_alloc*race_age_pct]
+  for (i in as.list(seq.Date(as.Date("04/01/2021", format="%m/%d/%Y"),as.Date("9/01/2021", format="%m/%d/%Y"), "days"))) {
+    sim_data <- sim_data[, daily_vax:=supply*geo_alloc*race_age_pct]
     sim_data <- sim_data[, vaccinated:=ifelse(vaccinated+daily_vax<=estimate*(.95), vaccinated+daily_vax, estimate*(.95))]
     temp <- copy(sim_data)
     temp <- temp[, daily_vax:=sum(daily_vax, na.rm=T), by = c("race_grp", "state_name")]
     temp <- temp[, vaccinated:=sum(vaccinated, na.rm=T), by = c("race_grp", "state_name")]
-    temp <- unique(temp[,.(race_grp, daily_vax, vaccinated, state_name, state_race_tot)])
+    temp <- unique(temp[,.(race_grp, daily_vax, vaccinated, state_name, state_race_elig, state_pop, pop_elig)])
     temp <- temp[, day:=i]
     out <- rbind(out, temp, fill = T)
     if (counter <= time_to_cap) {
@@ -185,19 +199,14 @@ for (s in unique(sim_data$state_name)) {
     }
     if (counter == 42) {
       sim_data <- sim_data[, geo_pop:=sum(estimate, na.rm=T), by = c(geo, "state_name")]
-      sim_data <- sim_data[, geo_alloc:=geo_pop/state_pop]
+      sim_data <- sim_data[, geo_alloc:=geo_pop/pop_elig]
     }
     counter <- counter+1
   }
 }
 
-out <- out[, vax_share:=vaccinated/sum(vaccinated, na.rm=T), by = c("day", "state_name")]
-out <- out[, race_share:=state_race_tot/sum(state_race_tot, na.rm=T), by = c("day", "state_name")]
-
-out <- out[, representation_factor:=vax_share/race_share]
-out <- out[race_grp=="White", nhw:=representation_factor]
-out <- out[, nhw:=mean(nhw, na.rm=T), by="day"]
-out <- out[, rr_white:=representation_factor/nhw]
 out <- out[, scenario:=paste0(scenario_label)]
+
+write.csv(out, paste0("results/", scenario_label, ".csv"), na = "", row.names = F)
 
 

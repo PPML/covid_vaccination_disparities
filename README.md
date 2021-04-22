@@ -10,6 +10,8 @@ Our manuscript describes our national and state-level projections of racial/ethn
 
 High-resolution figures, including results for each state, are available [here](https://github.com/PPML/covid_vaccination_disparities/tree/main/figures).
 
+Interactive visualization with results is accessible [here](https://mreitsma.shinyapps.io/vaccine_disparities_dashboard/).
+
 Contact: Marissa Reitsma (mreitsma@stanford.edu)
 
 ![National Projections of Vaccine Coverage, by Race/Ethnicity](https://github.com/PPML/covid_vaccination_disparities/blob/main/figures/Figure%202.png)

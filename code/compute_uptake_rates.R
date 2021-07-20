@@ -8,6 +8,8 @@ library(tidycensus)
 ## Prepare ACS Population Data
 ####################################
 
+setwd("~/COVID/vaccination_analysis/covid_vaccination_disparities_PPML/")
+
 ## FIPS MAP ##
 fips <- as.data.table(tidycensus::fips_codes)
 fips <- unique(fips[,.(state_name, state_code)])
@@ -18,17 +20,70 @@ df <- fread("data/usa_00024.csv")
 df <- df[GQ%in%c(1, 2, 5)] ## Remove institutionalized populations
 
 ## Assign race/ethnicity
-df <- df[HISPAN%in%c(1, 2, 3, 4), race_grp:="Hispanic"]
-df <- df[is.na(race_grp) & RACE==1, race_grp:="White"]
-df <- df[is.na(race_grp) & RACE==2, race_grp:="Black"]
-df <- df[is.na(race_grp) & RACE==3, race_grp:="American Indian or Alaska Native"]
-df <- df[is.na(race_grp) & RACE%in%c(4, 5), race_grp:="Asian"]
-df <- df[is.na(race_grp) & RACE%in%c(7, 8, 9), race_grp:="Other"]
-df <- df[is.na(race_grp) & RACED%in%c(630, 680, 681, 682, 685, 689, 690, 699), race_grp:="Native Hawaiian or Other Pacific Islander"]
-df <- df[is.na(race_grp), race_grp:="Asian"]
+df <- df[, ethnicity:=ifelse(HISPAN%in%c(1,2,3,4), "Hispanic", "Not Hispanic")]
+df <- df[RACE==1, race:="White"]
+df <- df[RACE==2, race:="Black"]
+df <- df[RACE==3, race:="American Indian or Alaska Native"]
+df <- df[RACE%in%c(4,5), race:="Asian"]
+df <- df[RACE%in%c(8, 9), race:="Other"]
+df <- df[RACE%in%c(7), race:="NEC"]
+df <- df[RACED%in%c(630, 680, 681, 682, 685, 689, 690, 699), race:="Native Hawaiian or Other Pacific Islander"]
+df <- df[is.na(race), race:="Asian"]
 
-## Merge state name
+## Account for race == "NEC" based on census approach
+race_breakdowns <- copy(df)
+race_breakdowns <- race_breakdowns[race!="NEC"]
+race_breakdowns <- race_breakdowns[, tot_race_eth:=sum(PERWT, na.rm=T), by = c("ethnicity", "race", "STATEFIP")]
+race_breakdowns <- race_breakdowns[, tot_race:=sum(PERWT, na.rm=T), by = c("ethnicity", "STATEFIP")]
+race_breakdowns <- race_breakdowns[, pct_race:=tot_race_eth/tot_race]
+race_breakdowns <- unique(race_breakdowns[,.(STATEFIP, ethnicity, race, pct_race)])
+
+nec_expand <- df[race=="NEC"]
+nec_expand <- nec_expand[, race:=NULL]
+nec_expand <- merge(nec_expand, race_breakdowns, by = c("STATEFIP", "ethnicity"), allow.cartesian=T)
+nec_expand <- nec_expand[, PERWT:=PERWT*pct_race]
+
+df <- df[race!="NEC"]
+df <- rbind(df, nec_expand[, pct_race:=NULL])
+
+df <- df[ethnicity=="Hispanic", race_grp:="Hispanic"]
+df <- df[is.na(race_grp) & race == "White", race_grp:="White"]
+df <- df[is.na(race_grp) & race == "Black", race_grp:="Black"]
+df <- df[is.na(race_grp) & race == "American Indian or Alaska Native", race_grp:="American Indian or Alaska Native"]
+df <- df[is.na(race_grp) & race == "Asian", race_grp:="Asian"]
+df <- df[is.na(race_grp) & race == "Other", race_grp:="Other"]
+df <- df[is.na(race_grp) & race == "Native Hawaiian or Other Pacific Islander", race_grp:="Native Hawaiian or Other Pacific Islander"]
+
+## Hispanic population breakdown by race
 df <- merge(df, fips, by.y = "state_code", by.x="STATEFIP")
+
+hisp_breakdown <- copy(df)
+hisp_breakdown <- hisp_breakdown[, tot_race_eth:=sum(PERWT, na.rm=T), by = c("race", "ethnicity", "state_name")]
+hisp_breakdown <- hisp_breakdown[, tot_eth:=sum(PERWT, na.rm=T), by = c("ethnicity", "state_name")]
+hisp_breakdown <- hisp_breakdown[, tot_race:=sum(PERWT, na.rm=T), by = c("race", "state_name")]
+hisp_breakdown <- hisp_breakdown[, pct_race:=tot_race_eth/tot_eth]
+hisp_breakdown <- hisp_breakdown[, pct_eth:=tot_race_eth/tot_race]
+
+race_eth <- copy(hisp_breakdown)
+race_eth <- unique(race_eth[,.(race, ethnicity, state_name, tot_eth, tot_race)])
+race_eth <- race_eth[, pct_eth:=tot_eth/sum(tot_eth, na.rm=T), by = c("state_name", "race")]
+race_eth <- race_eth[, pct_race:=tot_race/sum(tot_race, na.rm=T), by = c("state_name", "ethnicity")]
+race_eth <- race_eth[ethnicity == "Hispanic"]
+setnames(race_eth, "race", "race_grp")
+race_eth <- race_eth[, .(state_name, race_grp, ethnicity, pct_eth, pct_race)]
+race_eth <- melt(race_eth, id.vars = c("race_grp", "state_name", "ethnicity"), value.var = c("pct_eth", "pct_race"))
+race_eth <- race_eth[variable=="pct_eth", race_grp:="Hispanic"]
+race_eth <- race_eth[, c("variable", "ethnicity"):=NULL]
+setnames(race_eth, "value", "pct_pop")
+race_eth <- unique(race_eth)
+
+race_breakdown_by_ethnicity <- copy(hisp_breakdown)
+race_breakdown_by_ethnicity <- unique(race_breakdown_by_ethnicity[, .(tot_race_eth, state_name, race, ethnicity)])
+race_breakdown_by_ethnicity <- race_breakdown_by_ethnicity[, pct_race_eth:=tot_race_eth/sum(tot_race_eth, na.rm=T), by = c("state_name")]
+
+hisp_breakdown <- hisp_breakdown[ethnicity=="Hispanic"]
+hisp_breakdown <- unique(hisp_breakdown[,.(race, state_name, pct_race)])
+setnames(hisp_breakdown, "race", "race_grp")
 
 ## Make a dt with total population age 16+ by state and race
 pops_16 <- df[AGE>=16]
@@ -102,26 +157,42 @@ vax_race <- vax_race[, lapply(.SD, as.numeric), by = c("state_name", "Race Categ
 vax_race <- melt(vax_race, id.vars = c("state_name", "Race Categories Include Hispanic Individuals", "Hispanic Rescaled"))
 setnames(vax_race, "variable", "race_grp")
 
-## Adjust separate hispanic reporting for missingness
+vax_race <- vax_race[race_grp=="Hispanic" & is.na(value), flip_toggle:=1]
+vax_race <- vax_race[, flip_toggle:=mean(flip_toggle, na.rm=T), by = "state_name"]
+vax_race <- vax_race[flip_toggle==1, `Race Categories Include Hispanic Individuals`:=""]
+vax_race <- vax_race[, flip_toggle:=NULL]
+
+## Adjust for missingness in race and ethnicity
 vax_race <- vax_race[race_grp=="Unknown Race", unknown_race:=value]
 vax_race <- vax_race[, unknown_race:=mean(unknown_race, na.rm=T), by = "state_name"]
 vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp=="Unknown Ethnicity", unknown_eth:=value]
 vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes", unknown_eth:=mean(unknown_eth, na.rm=T), by = "state_name"]
-vax_race <- vax_race[!is.na(unknown_eth) & `Race Categories Include Hispanic Individuals`=="Yes" & race_grp=="Hispanic" & `Hispanic Rescaled`!=1, value_adj:=value/(1-unknown_eth)]
+vax_race <- vax_race[!is.na(unknown_eth) & `Race Categories Include Hispanic Individuals`=="Yes" & race_grp=="Hispanic" & is.na(`Hispanic Rescaled`), value_adj:=value/(1-unknown_eth)]
 vax_race <- vax_race[is.na(value_adj) & `Race Categories Include Hispanic Individuals`=="Yes" & race_grp=="Hispanic", value_adj:=value]
 
 vax_race <- vax_race[race_grp!="Unknown Race" & race_grp!="Unknown Ethnicity"]
-vax_race <- vax_race[race_grp!="Other"] # Other unrealistically high, consider these data unknown for computing uptake rates
+vax_race <- vax_race[race_grp=="Other", value:=NA] # Other unrealistically high, consider these data unknown for computing uptake rates
 
+vax_race <- merge(vax_race, race_eth, by = c("race_grp", "state_name"), all.x=T)
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp!="Hispanic", value:=value/sum(value, na.rm=T), by = "state_name"]
 vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp=="Hispanic", fixed_hisp:=value_adj]
 vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes", fixed_hisp:=mean(fixed_hisp, na.rm=T), by = "state_name"]
-vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp!="Hispanic", value_adj:=value/sum(value, na.rm=T), by = "state_name"]
-vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp%in%c("Black", "White"), bw_share:=value/sum(value, na.rm=T), by = "state_name"]
-vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes", bw_hispanic_overlap:=fixed_hisp*bw_share]
-vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & !is.na(bw_hispanic_overlap), value_adj:=value_adj-bw_hispanic_overlap]
-vax_race <- vax_race[, c("fixed_hisp", "bw_share", "bw_hispanic_overlap"):=NULL]
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp!="Hispanic" & !is.na(value), pct_pop:=pct_pop/sum(pct_pop, na.rm=T), by = "state_name"]
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes", rr_race:=value/pct_pop]
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & race_grp=="Hispanic", rr_eth:=rr_race]
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes", rr_hisp:=mean(rr_eth, na.rm=T), by = "state_name"]
 
-vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="", value_adj:=value/sum(value, na.rm=T), by = "state_name"]
+vax_race <- merge(vax_race, race_breakdown_by_ethnicity[ethnicity=="Hispanic"], by.x = c("state_name", "race_grp"), by.y=c("state_name", "race"), all.x=T)
+
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & ethnicity=="Hispanic", temp_joint:=pct_race_eth*rr_hisp*rr_race]
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & ethnicity=="Hispanic", temp_joint_hisp_sum:=sum(temp_joint, na.rm=T), by = "state_name"]
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes", final_joint:=temp_joint/(temp_joint_hisp_sum/fixed_hisp)]
+
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="Yes" & !is.na(final_joint), value_adj:=value-final_joint]
+
+vax_race <- vax_race[`Race Categories Include Hispanic Individuals`=="" | is.na(`Race Categories Include Hispanic Individuals`), value_adj:=value/sum(value, na.rm=T), by = "state_name"]
+
+vax_race <- vax_race[,.(state_name, race_grp, value, value_adj)]
 
 vax_race <- merge(vax_race, out, by = c("state_name", "race_grp"), all.x=T)
 vax_race <- vax_race[!is.na(value_adj), pop_share_agg_adj:=pop_share_agg/sum(pop_share_agg, na.rm=T), by = "state_name"]

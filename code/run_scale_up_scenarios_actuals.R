@@ -111,7 +111,7 @@ df <- merge(df, vax_stats, by = c("state_name", "race_grp"))
 df <- df[, vaccinated:=estimate*(vaccinated/100)]
 
 # Vaccination rate (one week average)
-vax_history <- fread("~/Downloads/COVID-19_Vaccinations_in_the_United_States_Jurisdiction (1).csv") #https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc
+vax_history <- fread("./data/COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv") #https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc
 vax_history <- vax_history[, Date:=mdy(Date)]
 setnames(vax_history, "Location", "state")
 fips <- as.data.table(tidycensus::fips_codes)
@@ -127,7 +127,7 @@ vax_history <- vax_history[, Administered_Dose1_Recip:=(Administered_Dose1_Recip
 vax_history <- vax_history[,.(Date, state_name, Administered_Dose1_Recip)]
 vax_history <- vax_history[, l1:=shift(Administered_Dose1_Recip, n = 1, type = "lead"), by = c("state_name")]
 vax_history <- vax_history[, incident:=as.numeric(Administered_Dose1_Recip)-as.numeric(l1)]
-# vax_history <- vax_history[, smooth:=frollmean(incident, 7, align = "right"), by = c("state_name")]
+vax_history <- vax_history[, smooth:=frollmean(incident, 7, align = "center"), by = c("state_name")]
 # vax_history <- vax_history[Date=="2021-04-01"]
 
 real_backup <- copy(df)
@@ -189,10 +189,14 @@ for (s in unique(sim_data$state_name)) {
   print(s)
   sim_data <- backup[state_name==s]
   counter <- 1
-  for (i in as.list(seq.Date(as.Date("04/01/2021", format="%m/%d/%Y"),as.Date("7/01/2021", format="%m/%d/%Y"), "days"))) {
+  for (i in as.list(seq.Date(as.Date("04/01/2021", format="%m/%d/%Y"),as.Date("09/01/2021", format="%m/%d/%Y"), "days"))) {
   
     if (scenario_label%in%c("Best Race", "Best Race and Geographic Targeting")) {
-      supply <- vax_history$incident[vax_history$state_name==s & vax_history$Date==i]
+      if (i > ymd("2021-07-15")) {
+        supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==ymd("2021-07-15")]
+      } else {
+        supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==i]
+      }
       sim_data <- sim_data[, daily_vax:=supply*geo_alloc_equal*race_age_pct]
       sim_data <- sim_data[is.na(daily_vax), daily_vax:=0]
       best_rate <- copy(sim_data)
@@ -205,7 +209,11 @@ for (s in unique(sim_data$state_name)) {
       sim_data <- sim_data[, daily_vax:=new_supply*geo_alloc*race_age_pct]
       sim_data <- sim_data[is.na(daily_vax), daily_vax:=0]
     } else {
-      supply <- vax_history$incident[vax_history$state_name==s & vax_history$Date==i]
+      if (i >= ymd("2021-07-15")) {
+        supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==ymd("2021-07-15")]
+      } else {
+        supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==i]
+      }
       sim_data <- sim_data[, daily_vax:=supply*geo_alloc*race_age_pct]
       sim_data <- sim_data[is.na(daily_vax), daily_vax:=0]
     }

@@ -85,7 +85,7 @@ hisp_breakdown <- hisp_breakdown[ethnicity=="Hispanic"]
 hisp_breakdown <- unique(hisp_breakdown[,.(race, state_name, pct_race)])
 setnames(hisp_breakdown, "race", "race_grp")
 
-## Make a dt with total population age 16+ by state and race
+## Make a dt with total population age 16+ by state and race (eligible population for time at analysis)
 pops_16 <- df[AGE>=16]
 pops_16 <- pops_16[, state_pop:=sum(PERWT, na.rm=T), by = c("state_name", "race_grp")]
 pops_16 <- unique(pops_16[,.(state_name, race_grp, state_pop)])

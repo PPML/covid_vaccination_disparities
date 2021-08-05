@@ -1,358 +1,358 @@
 "state_name","race_grp","state_pop"
-"Alabama","White",2577364
-"Alabama","Black",987766
-"Alabama","Asian",51878
+"Alabama","White",2582106.82430104
+"Alabama","Black",989690.51928262
+"Alabama","Asian",51976.8295681312
 "Alabama","Hispanic",134954
-"Alabama","Other",53697
-"Alabama","Native Hawaiian or Other Pacific Islander",1433
-"Alabama","American Indian or Alaska Native",15952
-"Alaska","White",343828
-"Alaska","American Indian or Alaska Native",74421
-"Alaska","Asian",35315
+"Alabama","Other",46900.1284065392
+"Alabama","Native Hawaiian or Other Pacific Islander",1435.20682967512
+"Alabama","American Indian or Alaska Native",15980.4916119912
+"Alaska","White",344468.895893115
+"Alaska","American Indian or Alaska Native",74581.4963155116
+"Alaska","Asian",35377.6985606391
 "Alaska","Hispanic",35464
-"Alaska","Black",13656
-"Alaska","Other",33546
-"Alaska","Native Hawaiian or Other Pacific Islander",6218
-"Arizona","American Indian or Alaska Native",201979
-"Arizona","White",3294092
+"Alaska","Black",13679.3297674525
+"Alaska","Other",32642.9828516333
+"Alaska","Native Hawaiian or Other Pacific Islander",6233.59661164803
+"Arizona","American Indian or Alaska Native",202345.108229037
+"Arizona","White",3299221.29967693
 "Arizona","Hispanic",1613305
-"Arizona","Asian",192998
-"Arizona","Other",108766
-"Arizona","Black",239865
-"Arizona","Native Hawaiian or Other Pacific Islander",9133
-"Arkansas","White",1729350
-"Arkansas","Black",341155
+"Arizona","Asian",193305.745889486
+"Arizona","Other",102537.246420298
+"Arizona","Black",240274.228820425
+"Arizona","Native Hawaiian or Other Pacific Islander",9149.37096382326
+"Arkansas","White",1731324.31033345
+"Arkansas","Black",341571.249541595
 "Arkansas","Hispanic",150636
-"Arkansas","Asian",36403
-"Arkansas","Other",40036
-"Arkansas","American Indian or Alaska Native",13957
-"Arkansas","Native Hawaiian or Other Pacific Islander",6705
+"Arkansas","Asian",36445.4454467171
+"Arkansas","Other",37577.4703162451
+"Arkansas","American Indian or Alaska Native",13972.3537993334
+"Arkansas","Native Hawaiian or Other Pacific Islander",6715.17056266451
+"California","White",12085720.1444803
 "California","Hispanic",11211973
-"California","White",12040267
-"California","Other",847922
-"California","Asian",4795823
-"California","Black",1687041
-"California","American Indian or Alaska Native",114585
-"California","Native Hawaiian or Other Pacific Islander",110953
-"Colorado","White",3196329
+"California","Other",776632.824967277
+"California","Asian",4814093.15310195
+"California","Black",1693721.38807484
+"California","American Indian or Alaska Native",115038.514599409
+"California","Native Hawaiian or Other Pacific Islander",111384.974776253
+"Colorado","White",3202310.81728727
 "Colorado","Hispanic",882385
-"Colorado","Other",101463
-"Colorado","Asian",151996
-"Colorado","American Indian or Alaska Native",23664
-"Colorado","Black",169543
-"Colorado","Native Hawaiian or Other Pacific Islander",5589
-"Connecticut","White",1932813
+"Colorado","Other",94806.9420981146
+"Colorado","Asian",152277.587327273
+"Colorado","American Indian or Alaska Native",23710.1100658792
+"Colorado","Black",169879.79435252
+"Colorado","Native Hawaiian or Other Pacific Islander",5598.74886894488
+"Connecticut","White",1939453.9010983
 "Connecticut","Hispanic",421289
-"Connecticut","Black",273846
-"Connecticut","Asian",129154
-"Connecticut","Other",55097
-"Connecticut","American Indian or Alaska Native",4330
-"Connecticut","Native Hawaiian or Other Pacific Islander",783
-"Delaware","White",496949
-"Delaware","Black",160628
-"Delaware","Asian",30159
-"Delaware","Other",15206
+"Connecticut","Black",274861.627115137
+"Connecticut","Asian",129618.759942699
+"Connecticut","Other",46955.8641523014
+"Connecticut","American Indian or Alaska Native",4346.35032678183
+"Connecticut","Native Hawaiian or Other Pacific Islander",786.497364775618
+"Delaware","White",498472.313582291
+"Delaware","Black",161167.522782582
+"Delaware","Asian",30255.2080966684
+"Delaware","Other",13038.5087627119
 "Delaware","Hispanic",61276
-"Delaware","American Indian or Alaska Native",2636
-"Delaware","Native Hawaiian or Other Pacific Islander",191
-"District of Columbia","Black",236774
-"District of Columbia","White",218659
+"Delaware","American Indian or Alaska Native",2643.94790927547
+"Delaware","Native Hawaiian or Other Pacific Islander",191.498866471119
+"District of Columbia","Black",237611.283290336
+"District of Columbia","White",219355.654926633
 "District of Columbia","Hispanic",55060
-"District of Columbia","Other",13677
-"District of Columbia","Asian",23191
-"District of Columbia","American Indian or Alaska Native",1750
-"District of Columbia","Native Hawaiian or Other Pacific Islander",92
-"Florida","White",9632022
-"Florida","Black",2437131
+"District of Columbia","Other",12067.02287675
+"District of Columbia","Asian",23261.8392305418
+"District of Columbia","American Indian or Alaska Native",1754.93997423583
+"District of Columbia","Native Hawaiian or Other Pacific Islander",92.2597015026835
+"Florida","White",9675299.55343289
+"Florida","Black",2449342.62311229
 "Florida","Hispanic",4383796
-"Florida","Asian",486614
-"Florida","Native Hawaiian or Other Pacific Islander",9057
-"Florida","Other",313815
-"Florida","American Indian or Alaska Native",33777
-"Georgia","Asian",341416
-"Georgia","Black",2501919
-"Georgia","Other",141077
-"Georgia","Native Hawaiian or Other Pacific Islander",3793
-"Georgia","White",4434373
+"Florida","Asian",488843.752465258
+"Florida","Native Hawaiian or Other Pacific Islander",9104.22472880085
+"Florida","Other",255892.014716218
+"Florida","American Indian or Alaska Native",33933.8315445504
+"Georgia","Asian",342522.163834829
+"Georgia","Black",2510425.05143344
+"Georgia","Other",117248.191863077
+"Georgia","Native Hawaiian or Other Pacific Islander",3808.47322985694
+"Georgia","White",4448521.60682305
 "Georgia","Hispanic",686795
-"Georgia","American Indian or Alaska Native",16694
-"Hawaii","Native Hawaiian or Other Pacific Islander",99987
-"Hawaii","White",249870
-"Hawaii","Other",181840
-"Hawaii","Asian",458489
+"Georgia","American Indian or Alaska Native",16746.5128157447
+"Hawaii","Native Hawaiian or Other Pacific Islander",100197.173328133
+"Hawaii","White",250349.076564573
+"Hawaii","Other",180244.03689277
+"Hawaii","Asian",459352.057558465
 "Hawaii","Hispanic",93440
-"Hawaii","Black",18437
-"Hawaii","American Indian or Alaska Native",1967
-"Idaho","White",1136680
-"Idaho","Other",28489
+"Hawaii","Black",18476.1758640216
+"Hawaii","American Indian or Alaska Native",1971.47979203757
+"Idaho","White",1138287.89173052
+"Idaho","Other",26823.2067607693
 "Idaho","Hispanic",150833
-"Idaho","American Indian or Alaska Native",12879
-"Idaho","Black",6555
-"Idaho","Asian",18396
-"Idaho","Native Hawaiian or Other Pacific Islander",1153
-"Illinois","White",6265258
-"Illinois","Asian",574225
+"Idaho","American Indian or Alaska Native",12897.0191045319
+"Idaho","Black",6568.12873277915
+"Idaho","Asian",18420.4731407296
+"Idaho","Native Hawaiian or Other Pacific Islander",1155.28053066618
+"Illinois","White",6275129.10323572
+"Illinois","Asian",575132.877142406
+"Illinois","Other",148485.097433866
+"Illinois","Black",1313084.10745332
 "Illinois","Hispanic",1564001
-"Illinois","Other",161482
-"Illinois","Black",1310885
-"Illinois","American Indian or Alaska Native",8211
-"Illinois","Native Hawaiian or Other Pacific Islander",2363
-"Indiana","White",4166715
+"Illinois","American Indian or Alaska Native",8225.89161214973
+"Illinois","Native Hawaiian or Other Pacific Islander",2366.92312253887
+"Indiana","White",4173182.94239435
 "Indiana","Hispanic",313191
-"Indiana","Native Hawaiian or Other Pacific Islander",1677
-"Indiana","Other",86406
-"Indiana","Black",452809
-"Indiana","Asian",122994
-"Indiana","American Indian or Alaska Native",11008
-"Iowa","White",2113628
+"Indiana","Native Hawaiian or Other Pacific Islander",1679.39018817617
+"Indiana","Other",78958.2252751427
+"Indiana","Black",453570.847924427
+"Indiana","Asian",123193.997547424
+"Indiana","American Indian or Alaska Native",11023.5966704752
+"Iowa","White",2114491.08858734
 "Iowa","Hispanic",125287
-"Iowa","Black",84541
-"Iowa","Other",28405
-"Iowa","Asian",58555
-"Iowa","American Indian or Alaska Native",7155
-"Iowa","Native Hawaiian or Other Pacific Islander",775
-"Kansas","White",1732763
+"Iowa","Black",84580.6984425712
+"Iowa","Other",27475.5242851443
+"Iowa","Asian",58578.5460363641
+"Iowa","American Indian or Alaska Native",7157.82163245685
+"Iowa","Native Hawaiian or Other Pacific Islander",775.321016125164
+"Kansas","White",1734868.65978089
 "Kansas","Hispanic",228726
-"Kansas","Black",117995
-"Kansas","Asian",65237
-"Kansas","American Indian or Alaska Native",15210
-"Kansas","Other",51621
-"Kansas","Native Hawaiian or Other Pacific Islander",655
-"Kentucky","White",2967474
-"Kentucky","Black",268110
+"Kansas","Black",118147.913865484
+"Kansas","Asian",65316.4778031797
+"Kansas","American Indian or Alaska Native",15227.7869480707
+"Kansas","Other",49264.3975345595
+"Kansas","Native Hawaiian or Other Pacific Islander",655.764067815728
+"Kentucky","White",2969186.91985633
+"Kentucky","Black",268271.756224023
 "Kentucky","Hispanic",107985
-"Kentucky","Other",47872
-"Kentucky","American Indian or Alaska Native",4552
-"Kentucky","Asian",54313
-"Kentucky","Native Hawaiian or Other Pacific Islander",1952
-"Louisiana","White",2170880
-"Louisiana","Black",1088467
+"Kentucky","Other",45961.0177183072
+"Kentucky","American Indian or Alaska Native",4554.33842422724
+"Kentucky","Asian",54345.867149409
+"Kentucky","Native Hawaiian or Other Pacific Islander",1953.10062769935
+"Louisiana","White",2174693.08450053
+"Louisiana","Black",1090530.66734737
 "Louisiana","Hispanic",163617
-"Louisiana","Asian",62095
-"Louisiana","Other",51844
-"Louisiana","American Indian or Alaska Native",16204
-"Louisiana","Native Hawaiian or Other Pacific Islander",394
-"Maine","White",1026611
+"Louisiana","Asian",62205.0703368024
+"Louisiana","Other",45825.045133164
+"Louisiana","American Indian or Alaska Native",16235.0314906171
+"Louisiana","Native Hawaiian or Other Pacific Islander",395.101191510284
+"Maine","White",1027372.19071953
 "Maine","Hispanic",16093
-"Maine","Black",11601
-"Maine","Other",15931
-"Maine","Asian",12660
-"Maine","American Indian or Alaska Native",8176
-"Maine","Native Hawaiian or Other Pacific Islander",306
-"Maryland","White",2470025
-"Maryland","Asian",309084
-"Maryland","Other",113234
-"Maryland","Black",1380366
+"Maine","Black",11612.2605157795
+"Maine","Other",15143.1868608537
+"Maine","Asian",12669.1262923354
+"Maine","American Indian or Alaska Native",8182.04415082681
+"Maine","Native Hawaiian or Other Pacific Islander",306.191460678365
+"Maryland","White",2475953.32276884
+"Maryland","Asian",309833.568950504
+"Maryland","Other",103030.293521543
+"Maryland","Black",1383862.92769648
 "Maryland","Hispanic",435491
-"Maryland","American Indian or Alaska Native",11287
-"Maryland","Native Hawaiian or Other Pacific Islander",1615
-"Massachusetts","White",3986734
+"Maryland","American Indian or Alaska Native",11312.1322869149
+"Maryland","Native Hawaiian or Other Pacific Islander",1618.75477571893
+"Massachusetts","White",4020133.74780946
 "Massachusetts","Hispanic",596307
-"Massachusetts","Black",366030
-"Massachusetts","Other",134969
-"Massachusetts","Asian",368893
-"Massachusetts","American Indian or Alaska Native",9942
-"Massachusetts","Native Hawaiian or Other Pacific Islander",2086
-"Michigan","White",6070518
-"Michigan","Black",1005460
+"Massachusetts","Black",369334.853946829
+"Massachusetts","Other",94976.7866782904
+"Massachusetts","Asian",372075.873725031
+"Massachusetts","American Indian or Alaska Native",10028.0478976056
+"Massachusetts","Native Hawaiian or Other Pacific Islander",2104.68994278812
+"Michigan","White",6076093.70024168
+"Michigan","Black",1006449.66377135
 "Michigan","Hispanic",351514
-"Michigan","Asian",257518
-"Michigan","American Indian or Alaska Native",38432
-"Michigan","Other",158194
-"Michigan","Native Hawaiian or Other Pacific Islander",1287
-"Minnesota","White",3566131
-"Minnesota","American Indian or Alaska Native",34947
-"Minnesota","Other",95918
-"Minnesota","Asian",210159
+"Michigan","Asian",257758.227041474
+"Michigan","American Indian or Alaska Native",38467.4281979273
+"Michigan","Other",151351.783200434
+"Michigan","Native Hawaiian or Other Pacific Islander",1288.19754713675
+"Minnesota","White",3572799.01497862
+"Minnesota","American Indian or Alaska Native",35023.6184586735
+"Minnesota","Other",88215.6182362474
+"Minnesota","Asian",210575.866342688
 "Minnesota","Hispanic",203295
-"Minnesota","Black",238663
-"Minnesota","Native Hawaiian or Other Pacific Islander",2045
-"Mississippi","Black",822798
-"Mississippi","White",1332980
+"Minnesota","Black",239199.596930904
+"Minnesota","Native Hawaiian or Other Pacific Islander",2049.28505286713
+"Mississippi","Black",823757.258596314
+"Mississippi","White",1334425.54353776
 "Mississippi","Hispanic",59503
-"Mississippi","Asian",22101
-"Mississippi","American Indian or Alaska Native",8232
-"Mississippi","Other",23175
-"Mississippi","Native Hawaiian or Other Pacific Islander",169
-"Missouri","White",3853883
-"Missouri","Black",510973
-"Missouri","Native Hawaiian or Other Pacific Islander",5848
+"Mississippi","Asian",22126.4488555382
+"Mississippi","American Indian or Alaska Native",8241.97704270692
+"Mississippi","Other",20734.5806295623
+"Mississippi","Native Hawaiian or Other Pacific Islander",169.191338118147
+"Missouri","White",3856533.11551638
+"Missouri","Black",511347.52974783
+"Missouri","Native Hawaiian or Other Pacific Islander",5852.86087247244
 "Missouri","Hispanic",173647
-"Missouri","Asian",104237
-"Missouri","Other",83724
-"Missouri","American Indian or Alaska Native",16823
-"Montana","White",739103
-"Montana","Other",19574
+"Missouri","Asian",104305.39561842
+"Missouri","Other",80614.2219631815
+"Missouri","American Indian or Alaska Native",16834.8762817121
+"Montana","White",739815.389333264
+"Montana","Other",18799.5452069477
+"Montana","Asian",6354.17259907454
+"Montana","American Indian or Alaska Native",43642.9203564244
 "Montana","Hispanic",28460
-"Montana","Asian",6348
-"Montana","American Indian or Alaska Native",43592
-"Montana","Black",3831
-"Montana","Native Hawaiian or Other Pacific Islander",386
-"Nebraska","White",1188230
+"Montana","Black",3835.664910274
+"Montana","Native Hawaiian or Other Pacific Islander",386.307594015334
+"Nebraska","White",1189390.32189426
 "Nebraska","Hispanic",138565
-"Nebraska","Asian",36516
-"Nebraska","Other",21898
-"Nebraska","Black",63307
-"Nebraska","American Indian or Alaska Native",9922
-"Nebraska","Native Hawaiian or Other Pacific Islander",454
-"Nevada","White",1245965
-"Nevada","Asian",217426
+"Nebraska","Asian",36551.337784285
+"Nebraska","Other",20620.2660248355
+"Nebraska","Black",63376.9336070043
+"Nebraska","American Indian or Alaska Native",9933.33277591472
+"Nebraska","Native Hawaiian or Other Pacific Islander",454.80791370488
+"Nevada","White",1250971.14582661
+"Nevada","Asian",218302.981045788
+"Nevada","Black",215776.406612358
 "Nevada","Hispanic",637738
-"Nevada","Black",214814
-"Nevada","Other",76261
-"Nevada","American Indian or Alaska Native",21522
-"Nevada","Native Hawaiian or Other Pacific Islander",14427
-"New Hampshire","White",999109
-"New Hampshire","Other",16896
-"New Hampshire","Asian",28974
+"Nevada","Other",69264.6354416418
+"Nevada","American Indian or Alaska Native",21613.6199599931
+"Nevada","Native Hawaiian or Other Pacific Islander",14486.2111136038
+"New Hampshire","White",999865.034691543
+"New Hampshire","Other",16104.8342908427
+"New Hampshire","Asian",28996.0591001308
 "New Hampshire","Hispanic",35504
-"New Hampshire","Black",12633
-"New Hampshire","Native Hawaiian or Other Pacific Islander",975
-"New Hampshire","American Indian or Alaska Native",1138
-"New Jersey","Asian",680065
-"New Jersey","White",3970749
+"New Hampshire","Black",12644.2622248346
+"New Hampshire","Native Hawaiian or Other Pacific Islander",975.767284149586
+"New Hampshire","American Indian or Alaska Native",1139.0424084994
+"New Jersey","Asian",683837.585395938
+"New Jersey","White",3992173.07129363
+"New Jersey","Black",867807.536649478
+"New Jersey","Other",93490.6406659845
 "New Jersey","Hispanic",1349772
-"New Jersey","Black",862943
-"New Jersey","Other",123603
-"New Jersey","American Indian or Alaska Native",7026
-"New Jersey","Native Hawaiian or Other Pacific Islander",1871
+"New Jersey","American Indian or Alaska Native",7066.49774482907
+"New Jersey","Native Hawaiian or Other Pacific Islander",1881.66825014537
 "New Mexico","Hispanic",758378
-"New Mexico","White",656989
-"New Mexico","American Indian or Alaska Native",134295
-"New Mexico","Asian",28581
-"New Mexico","Other",24671
-"New Mexico","Black",30354
-"New Mexico","Native Hawaiian or Other Pacific Islander",634
-"New York","Other",335214
-"New York","White",8747402
-"New York","Asian",1356749
+"New Mexico","White",659374.989943074
+"New Mexico","American Indian or Alaska Native",134851.149127609
+"New Mexico","Asian",28684.7106094108
+"New Mexico","Other",21505.5562171926
+"New Mexico","Black",30471.5964564614
+"New Mexico","Native Hawaiian or Other Pacific Islander",635.997646251448
+"New York","White",8803909.18505719
+"New York","Asian",1365537.15142238
 "New York","Hispanic",2756600
-"New York","Black",2110719
-"New York","American Indian or Alaska Native",32122
-"New York","Native Hawaiian or Other Pacific Islander",2001
-"North Carolina","White",5357619
+"New York","Black",2124942.47753316
+"New York","Other",255469.800851695
+"New York","American Indian or Alaska Native",32335.2456376845
+"New York","Native Hawaiian or Other Pacific Islander",2013.13949789288
+"North Carolina","White",5366735.01707095
 "North Carolina","Hispanic",654602
-"North Carolina","Black",1681755
-"North Carolina","Asian",236798
-"North Carolina","Other",154565
-"North Carolina","American Indian or Alaska Native",89463
-"North Carolina","Native Hawaiian or Other Pacific Islander",4064
-"North Dakota","White",496798
-"North Dakota","Other",9985
-"North Dakota","American Indian or Alaska Native",25581
+"North Carolina","Black",1684794.0694293
+"North Carolina","Asian",237218.818758885
+"North Carolina","American Indian or Alaska Native",89623.4765859502
+"North Carolina","Other",141821.391058825
+"North Carolina","Native Hawaiian or Other Pacific Islander",4071.22709609884
+"North Dakota","White",496844.254224391
+"North Dakota","Other",9933.43168621272
+"North Dakota","American Indian or Alaska Native",25583.8597060397
 "North Dakota","Hispanic",20061
-"North Dakota","Black",14040
-"North Dakota","Asian",9946
-"North Dakota","Native Hawaiian or Other Pacific Islander",1499
-"Ohio","White",7331603
+"North Dakota","Black",14041.417843736
+"North Dakota","Asian",9946.92123553105
+"North Dakota","Native Hawaiian or Other Pacific Islander",1499.11530408978
+"Ohio","White",7340625.59714468
 "Ohio","Hispanic",311304
-"Ohio","Other",171918
-"Ohio","Asian",212526
-"Ohio","Black",1049700
-"Ohio","American Indian or Alaska Native",13569
-"Ohio","Native Hawaiian or Other Pacific Islander",2952
-"Oklahoma","White",2055642
-"Oklahoma","Other",174340
-"Oklahoma","Black",203040
-"Oklahoma","American Indian or Alaska Native",221870
+"Ohio","Other",161227.961759059
+"Ohio","Asian",212788.511535921
+"Ohio","Black",1051085.70438697
+"Ohio","American Indian or Alaska Native",13584.9001853914
+"Ohio","Native Hawaiian or Other Pacific Islander",2955.32498798117
+"Oklahoma","White",2058066.60275641
+"Oklahoma","Other",171290.569202604
+"Oklahoma","Black",203296.527374237
+"Oklahoma","American Indian or Alaska Native",222156.818089672
 "Oklahoma","Hispanic",274803
-"Oklahoma","Asian",66185
-"Oklahoma","Native Hawaiian or Other Pacific Islander",4110
-"Oregon","White",2613858
+"Oklahoma","Asian",66262.0582539337
+"Oklahoma","Native Hawaiian or Other Pacific Islander",4114.42432314292
+"Oregon","White",2616592.8157667
 "Oregon","Hispanic",381822
-"Oregon","Black",57831
-"Oregon","Other",108055
-"Oregon","Asian",161593
-"Oregon","American Indian or Alaska Native",31410
-"Oregon","Native Hawaiian or Other Pacific Islander",8999
-"Pennsylvania","White",7879050
-"Pennsylvania","Black",985941
+"Oregon","Black",57895.2013406802
+"Oregon","Other",105044.114408236
+"Oregon","Asian",161761.229966899
+"Oregon","American Indian or Alaska Native",31444.3955297776
+"Oregon","Native Hawaiian or Other Pacific Islander",9008.24298770385
+"Pennsylvania","White",7891380.99813915
+"Pennsylvania","Black",987617.314503296
 "Pennsylvania","Hispanic",659620
-"Pennsylvania","Asian",357165
-"Pennsylvania","Other",161266
-"Pennsylvania","American Indian or Alaska Native",11778
-"Pennsylvania","Native Hawaiian or Other Pacific Islander",1659
-"Rhode Island","White",619818
-"Rhode Island","Black",46867
+"Pennsylvania","Asian",357736.531914804
+"Pennsylvania","Other",146665.672317058
+"Pennsylvania","American Indian or Alaska Native",11796.4974642379
+"Pennsylvania","Native Hawaiian or Other Pacific Islander",1661.98566144961
+"Rhode Island","White",625241.65080675
+"Rhode Island","Black",47316.3234859394
 "Rhode Island","Hispanic",120533
-"Rhode Island","Asian",29847
-"Rhode Island","American Indian or Alaska Native",1978
-"Rhode Island","Other",21616
-"Rhode Island","Native Hawaiian or Other Pacific Islander",183
-"South Carolina","White",2662540
-"South Carolina","Black",1028803
+"Rhode Island","Asian",30101.9894181341
+"Rhode Island","American Indian or Alaska Native",1993.69583586514
+"Rhode Island","Other",15470.9595215983
+"Rhode Island","Native Hawaiian or Other Pacific Islander",184.380931713135
+"South Carolina","White",2666241.43669306
+"South Carolina","Black",1030325.38867933
 "South Carolina","Hispanic",193771
-"South Carolina","Other",57119
-"South Carolina","Asian",65976
-"South Carolina","American Indian or Alaska Native",12964
-"South Carolina","Native Hawaiian or Other Pacific Islander",5514
-"South Dakota","White",559011
+"South Carolina","Other",51771.1198881568
+"South Carolina","Asian",66073.8674134183
+"South Carolina","American Indian or Alaska Native",12980.6736130854
+"South Carolina","Native Hawaiian or Other Pacific Islander",5523.51371295471
+"South Dakota","White",559123.390996473
+"South Dakota","American Indian or Alaska Native",43700.3125765736
+"South Dakota","Asian",8946.78443963711
+"South Dakota","Other",10635.2592990715
 "South Dakota","Hispanic",21495
-"South Dakota","American Indian or Alaska Native",43689
-"South Dakota","Asian",8945
-"South Dakota","Other",10764
-"South Dakota","Black",13701
-"South Dakota","Native Hawaiian or Other Pacific Islander",524
-"Tennessee","White",4039150
+"South Dakota","Black",13704.1511072403
+"South Dakota","Native Hawaiian or Other Pacific Islander",524.10158100401
+"Tennessee","White",4048078.94300021
 "Tennessee","Hispanic",246660
-"Tennessee","Black",845925
-"Tennessee","Other",81772
-"Tennessee","Asian",98630
-"Tennessee","American Indian or Alaska Native",13869
-"Tennessee","Native Hawaiian or Other Pacific Islander",1830
-"Texas","Asian",1135492
-"Texas","White",9641364
+"Tennessee","Black",847910.763201325
+"Tennessee","Other",70601.5420207332
+"Tennessee","Asian",98849.0664749496
+"Tennessee","American Indian or Alaska Native",13900.7463362817
+"Tennessee","Native Hawaiian or Other Pacific Islander",1834.93896649816
+"Texas","Asian",1137725.59947209
+"Texas","White",9659883.73560765
 "Texas","Hispanic",8089217
-"Texas","Black",2551058
-"Texas","Other",328282
-"Texas","Native Hawaiian or Other Pacific Islander",16174
-"Texas","American Indian or Alaska Native",67866
-"Utah","White",1847577
-"Utah","Asian",62706
-"Utah","Other",50632
-"Utah","American Indian or Alaska Native",23778
+"Texas","Black",2556302.92765219
+"Texas","Other",302131.629616313
+"Texas","Native Hawaiian or Other Pacific Islander",16204.1098414916
+"Texas","American Indian or Alaska Native",67987.9978102684
+"Utah","White",1851853.87006503
+"Utah","Asian",62831.5431324186
+"Utah","Other",46079.2544661157
+"Utah","American Indian or Alaska Native",23832.1764195917
 "Utah","Hispanic",304196
-"Utah","Black",21276
-"Utah","Native Hawaiian or Other Pacific Islander",18287
-"Vermont","White",467183
-"Vermont","Asian",8561
-"Vermont","Other",8741
+"Utah","Black",21331.1517553781
+"Utah","Native Hawaiian or Other Pacific Islander",18328.0041614624
+"Vermont","White",467596.338400658
+"Vermont","Asian",8568.20679387219
+"Vermont","Other",8312.57653880813
 "Vermont","Hispanic",8134
-"Vermont","Black",5094
-"Vermont","American Indian or Alaska Native",3729
-"Vermont","Native Hawaiian or Other Pacific Islander",140
-"Virginia","Black",1231124
-"Virginia","White",4214446
-"Virginia","Asian",458520
+"Vermont","Black",5098.81048466089
+"Vermont","American Indian or Alaska Native",3731.96356227716
+"Vermont","Native Hawaiian or Other Pacific Islander",140.104219723387
+"Virginia","Black",1234093.93931183
+"Virginia","White",4224141.00586273
+"Virginia","Asian",459572.411414321
+"Virginia","Other",139147.730355357
 "Virginia","Hispanic",566092
-"Virginia","Other",152900
-"Virginia","American Indian or Alaska Native",11498
-"Virginia","Native Hawaiian or Other Pacific Islander",3554
-"Washington","White",4209967
+"Virginia","American Indian or Alaska Native",11524.4476080089
+"Virginia","Native Hawaiian or Other Pacific Islander",3562.4654477518
+"Washington","White",4218993.31024048
 "Washington","Hispanic",654442
-"Washington","Black",219799
-"Washington","Other",237090
-"Washington","Asian",558342
-"Washington","Native Hawaiian or Other Pacific Islander",36517
-"Washington","American Indian or Alaska Native",64952
-"West Virginia","White",1333069
-"West Virginia","Black",46724
+"Washington","Black",220311.658623795
+"Washington","Other",226136.577978753
+"Washington","Asian",559523.415588061
+"Washington","Native Hawaiian or Other Pacific Islander",36600.0483911014
+"Washington","American Indian or Alaska Native",65101.989177814
+"West Virginia","White",1333938.22424271
+"West Virginia","Black",46753.9033965254
 "West Virginia","Hispanic",17379
-"West Virginia","Other",16279
-"West Virginia","Asian",12164
-"West Virginia","American Indian or Alaska Native",3429
-"West Virginia","Native Hawaiian or Other Pacific Islander",50
-"Wisconsin","White",3818086
+"West Virginia","Other",15370.2511556518
+"West Virginia","Asian",12171.5179624222
+"West Virginia","American Indian or Alaska Native",3431.07633323966
+"West Virginia","Native Hawaiian or Other Pacific Islander",50.0269094510065
+"Wisconsin","White",3821419.25745241
 "Wisconsin","Hispanic",268896
-"Wisconsin","Black",255921
-"Wisconsin","American Indian or Alaska Native",29895
-"Wisconsin","Asian",127071
-"Wisconsin","Other",57887
-"Wisconsin","Native Hawaiian or Other Pacific Islander",3051
-"Wyoming","American Indian or Alaska Native",8604
-"Wyoming","White",382036
+"Wisconsin","Black",256172.986797288
+"Wisconsin","American Indian or Alaska Native",29922.3095597237
+"Wisconsin","Asian",127192.990280254
+"Wisconsin","Other",54150.1753459059
+"Wisconsin","Native Hawaiian or Other Pacific Islander",3053.28056441618
+"Wyoming","American Indian or Alaska Native",8607.08111944359
+"Wyoming","White",382153.580575335
 "Wyoming","Hispanic",39282
-"Wyoming","Asian",3330
-"Wyoming","Other",6816
-"Wyoming","Black",3943
-"Wyoming","Native Hawaiian or Other Pacific Islander",532
+"Wyoming","Asian",3330.84653781552
+"Wyoming","Other",6692.94773012231
+"Wyoming","Black",3944.31104066618
+"Wyoming","Native Hawaiian or Other Pacific Islander",532.232996617066

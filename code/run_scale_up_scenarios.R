@@ -4,6 +4,9 @@ library(data.table)
 library(ggplot2)
 library(DBI)
 library(RSQLite)
+library(lubridate)
+
+setwd("~/COVID/vaccination_analysis/covid_vaccination_disparities_PPML/")
 
 regions <- fread("https://raw.githubusercontent.com/cphalpert/census-regions/master/us%20census%20bureau%20regions%20and%20divisions.csv")
 regions <- regions[, geo_id:=tolower(`State Code`)]
@@ -28,13 +31,11 @@ df <- df[race_grp_full == "Multiracial", race_grp_full:="Other"]
 df <- df[race_grp_full == "Native Hawaiian or Pacific Islander", race_grp_full:="Native Hawaiian or Other Pacific Islander"]
 df <- df[race_grp_full=="Latino", race_grp_full:="Hispanic"]
 
-
-df <- df[, state_pop:=sum(estimate, na.rm=T), by = c("state_name", "race_grp_full")]
 setnames(df, "race_grp_full", "race_grp")
 
-## For this, using ages 15+ (no individual-level data available at tract level)
-df <- df[`Age Start`>=15]
-df <- df[`Age Start`==15, estimate:=estimate*.9] # Reduce population because 15 year olds are not yet eligible
+## For this, using ages 18+
+df <- df[`Age Start`>=18]
+df <- df[, state_pop:=sum(estimate, na.rm=T), by = c("state_name", "race_grp")]
 
 ## Merge in SVI
 files <- list.files("data/svi_data/")
@@ -68,60 +69,64 @@ df <- df[is.na(effective_demand), effective_demand:=1] # Other doesn't have weig
 df <- df[, weight_actual:=NULL]
 setnames(df, "effective_demand", "weight_actual")
 
-# Vax Stats
-con <- dbConnect(SQLite(), "~/COVID/vaccination_analysis/cdc-vaccination-history/cdc.db")
-vax_stats <- as.data.table(dbReadTable(con, 'daily_reports'))
-vax_stats <- vax_stats[, Date:=as.Date(Date)]
-setnames(vax_stats, "LongName", "state_name")
+# Vaccination rates
+pops <- unique(df[,.(state_name, race_grp, state_pop)])
+setnames(pops, "state_pop", "state_pop_race")
+vax_stats <- fread("./data/COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv") #https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc
+vax_stats <- vax_stats[, Date:=mdy(Date)]
 vax_stats <- vax_stats[Date=="2021-04-01"]
-vax_stats <- vax_stats[,.(state_name, `Administered_Dose1_Recip`)]
-vax_stats <- vax_stats[, lapply(.SD, as.numeric), by = "state_name"]
-vax_stats <- vax_stats[, doses:=`Administered_Dose1_Recip`]
-vax_stats <- vax_stats[,.(doses, state_name)]
-vax_stats <- vax_stats[state_name=="New York State", state_name:="New York"]
+setnames(vax_stats, "Location", "state")
+fips <- as.data.table(tidycensus::fips_codes)
+fips <- unique(fips[,.(state_name, state, state_code)])
+vax_stats <- merge(vax_stats, fips, by = c("state"))
 
-# Population 16+
-state_pops <- fread("prepped/pops_16.csv")
-vax_stats <- merge(vax_stats, state_pops, by = "state_name")
-pop_share_vax <- fread("prepped/population_share_vax.csv")
-vax_stats <- merge(vax_stats, pop_share_vax[,.(state_name, race_grp, pop_share_agg)], by = c("state_name", "race_grp"))
+vax_stats <- vax_stats[,.(Date, state_name, Administered_Dose1_Recip_18PlusPop_Pct)]
+vax_stats <- vax_stats[, lapply(.SD, as.numeric), by = c("state_name", "Date")]
 
-# Race
-vax_race <- fread("prepped/share_race_vax.csv")
-vax_stats <- merge(vax_stats, vax_race, by = c("state_name", "race_grp"), all.x=T)
+vax_stats <- merge(vax_stats, state, by = c("state_name"))
+vax_stats <- vax_stats[is.na(value_adj), missing:=1]
+vax_stats <- vax_stats[!is.na(value_adj), missing:=0]
 vax_stats <- vax_stats[is.na(value_adj), pct_missing:=pop_share_agg]
-vax_stats <- vax_stats[, pct_missing:=sum(pct_missing, na.rm=T), by = "state_name"]
+vax_stats <- vax_stats[, pct_missing:=sum(pct_missing, na.rm=T), by = c("state_name", "Date")]
+
+vax_stats <- merge(vax_stats, pops, by = c("state_name", "race_grp"))
 vax_stats <- vax_stats[, value_adj:=value_adj*(1-pct_missing)]
 vax_stats <- vax_stats[is.na(value_adj), value_adj:=pop_share_agg]
-vax_stats <- vax_stats[, value_adj:=value_adj/sum(value_adj, na.rm=T), by = "state_name"]
-vax_stats <- vax_stats[, race_doses:=doses*value_adj]
-vax_stats <- vax_stats[race_doses>state_pop, add_doses:=race_doses-state_pop]
-vax_stats <- vax_stats[, add_doses:=sum(add_doses, na.rm=T), by = "state_name"]
-vax_stats <- vax_stats[race_doses>state_pop, exceeded:=1]
-vax_stats <- vax_stats[race_doses>state_pop, race_doses:=state_pop]
-vax_stats <- vax_stats[is.na(exceeded), second_pct:=value_adj/sum(value_adj), by = "state_name"]
+vax_stats <- vax_stats[, value_adj:=value_adj/sum(value_adj, na.rm=T), by = c("state_name", "Date")]
+vax_stats <- vax_stats[, pop_12_allrace:=sum(state_pop_race, na.rm=T), by = c("state_name", "Date")]
+vax_stats <- vax_stats[, doses_adj:=(Administered_Dose1_Recip_18PlusPop_Pct/100)*pop_12_allrace]
+vax_stats <- vax_stats[, race_doses:=doses_adj*value_adj]
+
+## Deal with 100+ round 1
+vax_stats <- vax_stats[race_doses>state_pop_race, add_doses:=race_doses-state_pop_race]
+vax_stats <- vax_stats[, add_doses:=sum(add_doses, na.rm=T), by = c("state_name", "Date")]
+vax_stats <- vax_stats[race_doses>state_pop_race, exceeded:=1]
+vax_stats <- vax_stats[race_doses>state_pop_race, race_doses:=state_pop_race]
+vax_stats <- vax_stats[is.na(exceeded), second_pct:=value_adj/sum(value_adj), by = c("state_name", "Date")]
 vax_stats <- vax_stats[is.na(exceeded), race_doses:=race_doses+(second_pct*add_doses)]
-vax_stats <- vax_stats[, vaccinated_pct:=(race_doses/state_pop)*100]
-vax_stats <- vax_stats[,.(state_name, race_grp, vaccinated_pct)]
+
+vax_stats <- vax_stats[, vaccinated:=(race_doses/state_pop_race)*100]
 
 df <- merge(df, vax_stats, by = c("state_name", "race_grp"))
+df <- df[, vaccinated:=estimate*(vaccinated/100)]
 
-df <- df[, vaccinated:=estimate*vaccinated_pct/100]
+# Vaccination rate (one week average)
+vax_history <- fread("./data/COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv") #https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc
+vax_history <- vax_history[, Date:=mdy(Date)]
+setnames(vax_history, "Location", "state")
+fips <- as.data.table(tidycensus::fips_codes)
+fips <- unique(fips[,.(state_name, state, state_code)])
+vax_history <- merge(vax_history, fips, by = c("state"))
 
-## State allocation based on size of 16+ population
-# alloc <- fread("prepped/pops_16.csv")
-# alloc <- alloc[, state_pop:=sum(state_pop, na.rm=T), by = "state_name"]
-# alloc <- unique(alloc[,.(state_pop, state_name)])
-# alloc <- alloc[, state_pct:=state_pop/sum(state_pop)]
-# 
-# df <- merge(df, alloc, by = "state_name")
-vax_history <- as.data.table(dbReadTable(con, 'daily_reports'))
-vax_history <- vax_history[LongName=="New York State", LongName:="New York"]
-vax_history <- vax_history[, Date:=as.Date(Date)]
-vax_history <- vax_history[,.(Date, LongName, Administered_Dose1_Recip)]
-setnames(vax_history, "LongName", "state_name")
-vax_history <- vax_history[, l1:=lag(Administered_Dose1_Recip, n = 1), by = c("state_name")]
-vax_history <- vax_history[, incident:=Administered_Dose1_Recip-l1]
+pops_all <- copy(pops)
+pops_all <- pops_all[, tot_pop:=sum(state_pop_race, na.rm=T), by = c("state_name")]
+pops_all <- unique(pops_all[,.(state_name, tot_pop)])
+vax_history <- merge(vax_history, pops_all, by = c("state_name"))
+vax_history <- vax_history[, Administered_Dose1_Recip:=(Administered_Dose1_Recip_18PlusPop_Pct/100)*tot_pop]
+
+vax_history <- vax_history[,.(Date, state_name, Administered_Dose1_Recip)]
+vax_history <- vax_history[, l1:=shift(Administered_Dose1_Recip, n = 1, type = "lead"), by = c("state_name")]
+vax_history <- vax_history[, incident:=as.numeric(Administered_Dose1_Recip)-as.numeric(l1)]
 vax_history <- vax_history[, smooth:=frollmean(incident, 7, align = "right"), by = c("state_name")]
 vax_history <- vax_history[Date=="2021-04-01"]
 
@@ -142,7 +147,7 @@ sim_data <- copy(df)
 ## Equalized Uptake
 ## Equalized Uptake and Geographic Targeting
 
-scenario_label <- "Equalized Uptake and Geographic Targeting"
+scenario_label <- "Equalized Uptake"
 
 if (scenario_label == "Status Quo") {
   print(paste0("Running ", scenario_label))
@@ -152,6 +157,11 @@ if (scenario_label == "Status Quo") {
 if (scenario_label == "Equalized Uptake") {
   print(paste0("Running ", scenario_label))
   sim_data <- sim_data[, wtd_pop:=ifelse(RPL_THEMES>=.75, estimate, estimate)]
+}
+
+if (scenario_label == "Geographic Targeting") {
+  print(paste0("Running ", scenario_label))
+  sim_data <- sim_data[, wtd_pop:=ifelse(RPL_THEMES>=.75, estimate*1.6, estimate*.8)]
 }
 
 if (scenario_label == "Equalized Uptake and Geographic Targeting") {

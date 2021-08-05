@@ -125,6 +125,17 @@ vax_history <- merge(vax_history, pops_all, by = c("state_name"))
 vax_history <- vax_history[, Administered_Dose1_Recip:=(Administered_Dose1_Recip_18PlusPop_Pct/100)*tot_pop]
 
 vax_history <- vax_history[,.(Date, state_name, Administered_Dose1_Recip)]
+
+## FIX NON-MONTONICITY
+for (i in as.list(seq.Date(as.Date(min(vax_history$Date)), as.Date(max(vax_history$Date)) , "days"))) {
+  print(ymd(i))
+  vax_history <- vax_history[, current_temp:=NULL]
+  vax_history <- vax_history[Date == ymd(i), current_temp:=Administered_Dose1_Recip]
+  vax_history <- vax_history[, current_temp:=mean(current_temp, na.rm=T), by = "state_name"]
+  vax_history <- vax_history[Date < ymd(i) & Administered_Dose1_Recip > current_temp, Administered_Dose1_Recip:=current_temp]
+}
+
+## COMPUTE INCIDENT
 vax_history <- vax_history[, l1:=shift(Administered_Dose1_Recip, n = 1, type = "lead"), by = c("state_name")]
 vax_history <- vax_history[, incident:=as.numeric(Administered_Dose1_Recip)-as.numeric(l1)]
 vax_history <- vax_history[, smooth:=frollmean(incident, 7, align = "center"), by = c("state_name")]
@@ -149,40 +160,30 @@ sim_data <- copy(df)
 
 scenario_label <- "Status Quo"
 
-scenario_label <- "Best Race"
+# scenario_label <- "Equalized Uptake"
 
-scenario_label <- "Best Race and Geographic Targeting"
+# scenario_label <- "Equalized Uptake and Geographic Targeting"
 
-if (scenario_label %in% c("Status Quo", "Best Race", "Equalized Uptake")) {
-  print(paste0("Running ", scenario_label))
-  sim_data <- sim_data[, wtd_pop:=ifelse(RPL_THEMES>=.75, estimate, estimate)]
-}
-
-if (scenario_label %in% c("Geographic Targeting", "Equalized Uptake and Geographic Targeting", "Best Race and Geographic Targeting")) {
-  print(paste0("Running ", scenario_label))
-  sim_data <- sim_data[, wtd_pop:=ifelse(RPL_THEMES>=.75, estimate*1.6, estimate*.8)]
-}
+print(paste0("Running ", scenario_label))
 
 ## Compute tract allocation
-sim_data <- sim_data[, geo_pop:=sum(wtd_pop, na.rm=T), by = c(geo, "state_name")]
-sim_data <- sim_data[, geo_pop_equal:=sum(estimate, na.rm=T), by = c(geo, "state_name")]
+### Percent of states' population in each census tract
+sim_data <- sim_data[, geo_pop:=sum(estimate, na.rm=T), by = c(geo, "state_name")]
 sim_data <- sim_data[, pop_elig:=sum(estimate, na.rm=T), by = "state_name"]
 sim_data <- sim_data[, geo_alloc:=geo_pop/pop_elig]
-sim_data <- sim_data[, geo_alloc_equal:=geo_pop_equal/pop_elig]
-sim_data <- sim_data[, weighted_demand:=(estimate-vaccinated)*weight_actual]
-if (scenario_label%in%c("Best Race", "Best Race and Geographic Targeting")) {
-  sim_data <- sim_data[, weighted_demand:=(estimate-vaccinated)*1]
+if (scenario_label%in%c("Status Quo")) {
+  sim_data <- sim_data[, weighted_demand:=(estimate-vaccinated)*weight_actual] ### Demand scalar is the size of the unvaccinated population multiplied by the relative uptake rate
+  sim_data <- sim_data[, race_age_pct:=weighted_demand/sum(weighted_demand, na.rm=T), by = c(geo, "state_name")] ### Compute share of vaccinations in each tract by race
 }
-sim_data <- sim_data[, race_age_pct:=weighted_demand/sum(weighted_demand, na.rm=T), by = c(geo, "state_name")]
+if (scenario_label%in%c("Equalized Uptake", "Equalized Uptake and Geographic Targeting")) {
+  sim_data <- sim_data[, weighted_demand_sq:=(estimate-vaccinated)*weight_actual] # For scenarios, we need to know observed relative uptake to set "best rate" 
+  sim_data <- sim_data[, race_age_pct_sq:=weighted_demand_sq/sum(weighted_demand_sq, na.rm=T), by = c(geo, "state_name")]
+  sim_data <- sim_data[, weighted_demand:=(estimate-vaccinated)*1] # But actual scale-up further assumes there is no differential uptake rates
+  sim_data <- sim_data[, race_age_pct:=weighted_demand/sum(weighted_demand, na.rm=T), by = c(geo, "state_name")]
+}
 sim_data <- sim_data[, state_race_elig:=sum(estimate, na.rm=T), by = c("state_name", "race_grp")]
 
-## Fix Current Values ##
-sim_data <- sim_data[, weight_actual_current:=weight_actual]
-sim_data <- sim_data[, original_vaccinated:=vaccinated]
-
 backup <- copy(sim_data)
-
-time_to_cap <- 7*6
 
 out <- NULL
 for (s in unique(sim_data$state_name)) {
@@ -191,22 +192,28 @@ for (s in unique(sim_data$state_name)) {
   counter <- 1
   for (i in as.list(seq.Date(as.Date("04/01/2021", format="%m/%d/%Y"),as.Date("09/01/2021", format="%m/%d/%Y"), "days"))) {
   
-    if (scenario_label%in%c("Best Race", "Best Race and Geographic Targeting")) {
+    if (scenario_label%in%c("Equalized Uptake", "Equalized Uptake and Geographic Targeting")) {
       if (i > ymd("2021-07-15")) {
-        supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==ymd("2021-07-15")]
+        supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==ymd("2021-07-15")] # To make long-term projections, assume supply is maintained at current rates
       } else {
         supply <- vax_history$smooth[vax_history$state_name==s & vax_history$Date==i]
       }
-      sim_data <- sim_data[, daily_vax:=supply*geo_alloc_equal*race_age_pct]
+      sim_data <- sim_data[, daily_vax:=supply*geo_alloc*race_age_pct_sq] # Compute number vaccinated under observed uptake rates
       sim_data <- sim_data[is.na(daily_vax), daily_vax:=0]
       best_rate <- copy(sim_data)
-      best_rate <- best_rate[, tot_daily_vax:=sum(daily_vax, na.rm=T), by = "race_grp"]
+      best_rate <- best_rate[, tot_daily_vax:=sum(daily_vax, na.rm=T), by = "race_grp"] # Compute vaccination rate under observed
       best_rate <- best_rate[, vax_rate:=tot_daily_vax/state_race_elig]
       best_rate <- unique(best_rate[,.(race_grp, state_race_elig, pop_elig, vax_rate)])
-      best_vax_rate <- max(best_rate$vax_rate[best_rate$state_race_elig>200000 & best_rate$race_grp%in%c("Asian", "Black", "Hispanic", "White")])
-      
+      best_vax_rate <- max(best_rate$vax_rate[best_rate$state_race_elig>200000 & best_rate$race_grp%in%c("Asian", "Black", "Hispanic", "White")]) # Scenarios assume best vaccination rate among four racial/ethnic groups with at least 200K population 
+
       new_supply <- best_vax_rate*best_rate$pop_elig[1]
-      sim_data <- sim_data[, daily_vax:=new_supply*geo_alloc*race_age_pct]
+      
+      if (scenario_label == "Equalized Uptake and Geographic Targeting" & counter <= 42) { # Applies for first six weeks
+        sim_data <- sim_data[RPL_THEMES>=.75, daily_vax:=2*new_supply*geo_alloc*race_age_pct] # For geographic targeting, assume doubled vaccination rate in most disadvantaged quartile
+        sim_data <- sim_data[RPL_THEMES<.75 | is.na(RPL_THEMES), daily_vax:=new_supply*geo_alloc*race_age_pct]
+      } else {
+        sim_data <- sim_data[, daily_vax:=new_supply*geo_alloc*race_age_pct]
+      }
       sim_data <- sim_data[is.na(daily_vax), daily_vax:=0]
     } else {
       if (i >= ymd("2021-07-15")) {
@@ -225,17 +232,7 @@ for (s in unique(sim_data$state_name)) {
     temp <- unique(temp[,.(race_grp, daily_vax, vaccinated, state_name, state_race_elig, state_pop, pop_elig)])
     temp <- temp[, day:=i]
     out <- rbind(out, temp, fill = T)
-    if (counter <= time_to_cap) {
-      if (scenario_label == "Equalized Uptake" | scenario_label == "Equalized Uptake and Geographic Targeting") {
-        sim_data <- sim_data[, weight_actual_current:=weight_actual_current+(((1-weight_actual)/time_to_cap))]
-        sim_data <- sim_data[, weighted_demand:=(estimate-original_vaccinated)*weight_actual_current]
-        sim_data <- sim_data[, race_age_pct:=weighted_demand/sum(weighted_demand, na.rm=T), by = c(geo, "state_name")]
-      }
-    }
-    if (counter == 42) {
-      sim_data <- sim_data[, geo_pop:=sum(estimate, na.rm=T), by = c(geo, "state_name")]
-      sim_data <- sim_data[, geo_alloc:=geo_pop/pop_elig]
-    }
+
     counter <- counter+1
   }
 }

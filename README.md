@@ -8,4 +8,7 @@ Results for each state are available [here](https://github.com/PPML/covid_vaccin
 
 Contact: Marissa Reitsma (mreitsma@stanford.edu)
 
+![Relative Rates of Vaccine Uptake, by Race/Ethnicity and State](https://github.com/PPML/covid_vaccination_disparities/blob/main/jpeg_figures/Figure%201.jpg)
+
+
 ![National Projections of Vaccine Coverage, by Race/Ethnicity](https://github.com/PPML/covid_vaccination_disparities/blob/main/jpeg_figures/Figure%202.jpg)
